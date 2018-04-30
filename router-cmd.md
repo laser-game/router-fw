@@ -43,3 +43,16 @@ uint8_t get_enable_immorality(void);
 void set_batch_shots_count(uint8_t batch_shots_count);
 uint8_t get_batch_shots_count(void);
 ```
+
+## Events
+
+
+## RF packet
+
+* address
+* size LSB (1,127) if bis 7 is set then nex paxket is size MSB else nex is data
+* size MSB or data
+* n data bytes, where n = size - packet_head - crc_size
+* crc bytes
+
+Max packet's size is 512B.
