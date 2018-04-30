@@ -2,74 +2,44 @@
 
 ## Vest Configuration
 
-### `set_game_name`
+### game name
 ```C
-uint8_t index; // index position char in name 0-15
-char c;        // set char
+void set_game_name(uint8_t index, char c);
+char get_game_name(uint8_t index, char c);
 ```
 
-### `get_game_name`
+### game mode
 ```C
-uint8_t index; // index position char in name 0-15
-char c;        // set char
+void set_game_mode(uint8_t mode);
+uint8_t get_game_mode(uint8_t mode);
 ```
 
-### `set_game_mode`
+### sound set type
 ```C
-uint8_t mode;
+void set_sound_set_type(uint8_t sound_set_type);
+uint8_t get_sound_set_type(uint8_t sound_set_type);
 ```
 
-### `get_game_mode`
+### enable sound
 ```C
-uint8_t mode;
+void set_enable_sound(uint8_t state);
+uint8_t get_enable_sound(uint8_t state);
 ```
 
-### `set_sound_set_type`
+### enable vest light
 ```C
-uint8_t sound_set_type;
+void set_enable_vest_light(uint8_t state);
+uint8_t get_enable_vest_light(uint8_t state);
 ```
 
-### `get_sound_set_type`
+### enable immorality
 ```C
-uint8_t sound_set_type;
+void set_enable_immorality(uint8_t state);
+uint8_t get_enable_immorality(uint8_t state);
 ```
 
-### `set_enable_sound`
+### batch shots count
 ```C
-uint8_t state;
-```
-
-### `get_enable_sound`
-```C
-uint8_t state;
-```
-
-### `set_enable_vest_light`
-```C
-uint8_t state;
-```
-
-### `get_enable_vest_light`
-```C
-uint8_t state;
-```
-
-### `set_enable_immorality`
-```C
-uint8_t state;
-```
-
-### `get_enable_immorality`
-```C
-uint8_t state;
-```
-
-### `set_batch_shots_count`
-```C
-uint8_t batch_shots_count;
-```
-
-### `get_batch_shots_count`
-```C
-uint8_t batch_shots_count;
+void set_batch_shots_count(uint8_t batch_shots_count);
+uint8_t get_batch_shots_count(uint8_t batch_shots_count);
 ```
