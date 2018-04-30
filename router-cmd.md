@@ -84,9 +84,9 @@ rgb_t get_vest_color(uint8_t vest);
 
 ### events
 ```cpp
-void set_vest_event_hit_me(uint8_t vest, uint8_t who);
-uint8_t get_vest_event_hit_me(uint8_t vest);
-void get_vest_events_new(uint8_t vest);
+void set_vest_event_hit_me(uint8_t who);
+uint8_t get_vest_event_hit_me(void);
+void get_vest_events_new(void);
 ```
 
 
