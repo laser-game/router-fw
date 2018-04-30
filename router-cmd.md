@@ -49,6 +49,8 @@ uint8_t get_batch_shots_count(void);
 
 ## RF packet
 
+![demo](/img/lgrf_packet.svg)
+
 * address
 * size LSB (1,127) if bis 7 is set then nex paxket is size MSB else nex is data
 * size MSB or data
