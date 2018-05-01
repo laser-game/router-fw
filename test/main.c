@@ -1,15 +1,16 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define ADDRESS     7
 #define BUFFER_SIZE 512
 
 typedef struct {
-    uint8_t  data;
-    uint32_t crc;
+    uint8_t  data[BUFFER_SIZE];
+    uint32_t crc[BUFFER_SIZE];
+    uint16_t index_packet_start;
+    uint16_t index_packet_check;
+    uint16_t index_write;
 } buffer_t;
-
-buffer_t rx_buffer[BUFFER_SIZE];
-buffer_t tx_buffer[BUFFER_SIZE];
 
 void print_bin_byte(uint8_t byte)
 {
@@ -48,6 +49,19 @@ void print_hex_vector(uint64_t vector)
     printf("\n");
 }
 
+void buffer_print(buffer_t *buffer)
+{
+    printf("buffer:\n");
+    for (uint16_t i = 0; i < BUFFER_SIZE; i++)
+    {
+        if ((i % 32) == 0 && i)
+            printf("\n");
+        print_hex_byte(buffer->data[i]);
+        printf(" ");
+    }
+    printf("\n");
+}
+
 uint32_t crc32(uint8_t data)
 {
     const uint64_t mask_msb  = 0x8000000000;
@@ -60,25 +74,54 @@ uint32_t crc32(uint8_t data)
 
     vector = (uint64_t) data << 32;
 
-    print_bin_vector(vector);
-
     for (i = 0; !(gp & mask_msb); i++)
         gp <<= 1;
 
-    for (i = 0; vector &mask_data; i++)
+    for (i = 0; (vector & mask_data); i++)
     {
         if ((vector << i) & mask_msb)
             vector ^= gp;
         gp >>= 1;
     }
 
-    print_bin_vector(vector);
-
     return (uint32_t) (vector & mask_crc);
 }
 
+void buffe_init(buffer_t *buffer)
+{
+    buffer->index_packet_start = 0;
+    buffer->index_packet_check = 0;
+    buffer->index_write        = 0;
+
+    for (uint16_t i = 0; i < BUFFER_SIZE; i++)
+    {
+        buffer->data[i] = 0;
+        buffer->crc[i] = 0;
+    }
+}
+
+void buffer_insert(buffer_t *buffer, uint8_t data)
+{
+    buffer->data[buffer->index_write] = data;
+    buffer->crc[buffer->index_write]  = crc32(data);
+}
+
+
+
 int main(void)
 {
-    crc32(7);
+    buffer_t buffer;
+    buffe_init(&buffer);
+
+
+    buffer_print(&buffer);
+
+    buffer_insert(&buffer, 1);
+
+
+
+    buffer_print(&buffer);
+
+
     return 0;
 }
