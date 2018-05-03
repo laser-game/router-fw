@@ -16,7 +16,7 @@ typedef enum {
     ANALYSIS_PACKET_STATE_SEARCH_END
 } analysis_packet_state_t;
 
-typedef struct {
+typedef struct buffer_t {
     uint8_t  data[BUFFER_SIZE];
     uint16_t index_read;
     uint16_t index_write;
@@ -219,6 +219,18 @@ void buffer_insert(buffer_t *buffer, uint8_t data)
         buffer->index_write = 0;
 }
 
+void buffer_insert_zeros(buffer_t *buffer, uint16_t number)
+{
+    for (; number; number--)
+        buffer_insert(buffer, 0);
+}
+
+void buffer_insert_rand(buffer_t *buffer, uint16_t number)
+{
+    for (; number; number--)
+        buffer_insert(buffer, rand() % 256);
+}
+
 int main(void)
 {
     uint16_t i;
@@ -227,10 +239,9 @@ int main(void)
     buffe_init(&buffer);
     crc_table_init();
 
-    buffer_insert(&buffer, 1);
+    srand(time(NULL));
 
-    for (i = 0; i < 33; i++)
-        buffer_insert(&buffer, rand() % 256);
+    buffer_insert_zeros(&buffer, 10);
 
     buffer_insert(&buffer, 7);
     buffer_insert(&buffer, 0);
@@ -247,10 +258,7 @@ int main(void)
     buffer_insert(&buffer, (uint8_t) (crc >> 8));
     buffer_insert(&buffer, (uint8_t) (crc >> 0));
 
-    srand(time(NULL));
-
-    for (i = 0; i < 400; i++)
-        buffer_insert(&buffer, rand() % 256);
+    buffer_insert_zeros(&buffer, 10);
 
     buffer_insert(&buffer, 7);
     buffer_insert(&buffer, 0);
@@ -273,23 +281,7 @@ int main(void)
     buffer_insert(&buffer, (uint8_t) (crc >> 8));
     buffer_insert(&buffer, (uint8_t) (crc >> 0));
 
-    buffer_insert(&buffer, 7);
-    buffer_insert(&buffer, 0);
-    buffer_insert(&buffer, 11);
-    buffer_insert(&buffer, 1);
-    buffer_insert(&buffer, 2);
-    buffer_insert(&buffer, 3);
-    buffer_insert(&buffer, 4);
-
-    crc = buffer_crc(&buffer, buffer.index_write - 7, 7);
-
-    buffer_insert(&buffer, (uint8_t) (crc >> 24));
-    buffer_insert(&buffer, (uint8_t) (crc >> 16));
-    buffer_insert(&buffer, (uint8_t) (crc >> 8));
-    buffer_insert(&buffer, (uint8_t) (crc >> 0));
-
-    for (i = 0; i < 10; i++)
-        buffer_insert(&buffer, rand() % 256);
+    buffer_insert_zeros(&buffer, 10);
 
     buffer_insert(&buffer, 7);
     buffer_insert(&buffer, 0);
@@ -305,6 +297,8 @@ int main(void)
     buffer_insert(&buffer, (uint8_t) (crc >> 16));
     buffer_insert(&buffer, (uint8_t) (crc >> 8));
     buffer_insert(&buffer, (uint8_t) (crc >> 0));
+
+    buffer_insert_zeros(&buffer, 10);
 
     buffer_print(&buffer);
     buffer_packet_check(&buffer);
