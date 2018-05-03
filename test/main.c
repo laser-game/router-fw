@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define ADDRESS         7
-#define BUFFER_SIZE     512
+#define ADDRESS          7
+#define BUFFER_SIZE      512
 
-#define PACKET_MIN_SIZE 8
-#define PACKET_MAX_SIZE 512
+#define PACKET_MIN_SIZE  8
+#define PACKET_MAX_SIZE  512
+#define PACKET_HEAD_SIZE 3
+#define PACKET_CRC_SIZE  4
+#define PACKET_INFO_SIZE PACKET_HEAD_SIZE + PACKET_CRC_SIZE
 
 typedef enum {
     ANALYSIS_PACKET_STATE_SEARCH_ADDRESS,
@@ -225,10 +228,38 @@ void buffer_insert_zeros(buffer_t *buffer, uint16_t number)
         buffer_insert(buffer, 0);
 }
 
+void buffer_insert_ones(buffer_t *buffer, uint16_t number)
+{
+    for (; number; number--)
+        buffer_insert(buffer, 0xFF);
+}
+
 void buffer_insert_rand(buffer_t *buffer, uint16_t number)
 {
     for (; number; number--)
         buffer_insert(buffer, rand() % 256);
+}
+
+void packet_create(buffer_t *buffer, uint16_t data_size, uint8_t data[])
+{
+    uint32_t crc;
+    uint16_t size = data_size + PACKET_INFO_SIZE;
+    uint16_t start = buffer->index_write;
+
+    buffer_insert(buffer, ADDRESS);
+    buffer_insert(buffer, (uint8_t)(size >> 8));
+    buffer_insert(buffer, (uint8_t)(size & 0xFF));
+
+    printf("data size: %d\n", data_size);
+
+    for (uint8_t i=0; i < data_size; i++)
+        buffer_insert(buffer, data[i]);
+
+    crc = buffer_crc(buffer, start, data_size + PACKET_HEAD_SIZE);
+    buffer_insert(buffer, (uint8_t) (crc >> 24));
+    buffer_insert(buffer, (uint8_t) (crc >> 16));
+    buffer_insert(buffer, (uint8_t) (crc >> 8));
+    buffer_insert(buffer, (uint8_t) (crc >> 0));
 }
 
 int main(void)
@@ -241,64 +272,10 @@ int main(void)
 
     srand(time(NULL));
 
-    buffer_insert_zeros(&buffer, 10);
-
-    buffer_insert(&buffer, 7);
-    buffer_insert(&buffer, 0);
-    buffer_insert(&buffer, 11);
-    buffer_insert(&buffer, 1);
-    buffer_insert(&buffer, 2);
-    buffer_insert(&buffer, 3);
-    buffer_insert(&buffer, 4);
-
-    crc = buffer_crc(&buffer, buffer.index_write - 7, 7);
-
-    buffer_insert(&buffer, (uint8_t) (crc >> 24));
-    buffer_insert(&buffer, (uint8_t) (crc >> 16));
-    buffer_insert(&buffer, (uint8_t) (crc >> 8));
-    buffer_insert(&buffer, (uint8_t) (crc >> 0));
-
-    buffer_insert_zeros(&buffer, 10);
-
-    buffer_insert(&buffer, 7);
-    buffer_insert(&buffer, 0);
-    buffer_insert(&buffer, 17);
-    buffer_insert(&buffer, 4);
-    buffer_insert(&buffer, 6);
-    buffer_insert(&buffer, 8);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-    buffer_insert(&buffer, 9);
-
-    crc = buffer_crc(&buffer, buffer.index_write - 13, 13);
-
-    buffer_insert(&buffer, (uint8_t) (crc >> 24));
-    buffer_insert(&buffer, (uint8_t) (crc >> 16));
-    buffer_insert(&buffer, (uint8_t) (crc >> 8));
-    buffer_insert(&buffer, (uint8_t) (crc >> 0));
-
-    buffer_insert_zeros(&buffer, 10);
-
-    buffer_insert(&buffer, 7);
-    buffer_insert(&buffer, 0);
-    buffer_insert(&buffer, 11);
-    buffer_insert(&buffer, 1);
-    buffer_insert(&buffer, 2);
-    buffer_insert(&buffer, 3);
-    buffer_insert(&buffer, 4);
-
-    crc = buffer_crc(&buffer, buffer.index_write - 7, 7);
-
-    buffer_insert(&buffer, (uint8_t) (crc >> 24));
-    buffer_insert(&buffer, (uint8_t) (crc >> 16));
-    buffer_insert(&buffer, (uint8_t) (crc >> 8));
-    buffer_insert(&buffer, (uint8_t) (crc >> 0));
-
-    buffer_insert_zeros(&buffer, 10);
+    buffer_insert_ones(&buffer, 13);
+    packet_create(&buffer, 4, (uint8_t[]){ 1, 2, 3, 4 });
+    buffer_insert_ones(&buffer, 230);
+    packet_create(&buffer, 7, (uint8_t[]){ 7, 7, 7, 7, 7, 7, 7 });
 
     buffer_print(&buffer);
     buffer_packet_check(&buffer);
