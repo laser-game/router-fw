@@ -74,7 +74,7 @@ void buffer_print(buffer_t *buffer)
         print_hex_byte(buffer->data[i]);
         printf(" ");
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 uint32_t crc32(uint8_t data)
@@ -136,7 +136,7 @@ uint32_t buffer_crc(buffer_t *buffer, uint16_t start, uint16_t size)
 void buffer_packet_check(buffer_t *buffer)
 {
     uint32_t crc, packet_crc;
-    uint16_t index, start, stop, size, size_cnt;
+    uint16_t i, index, start, stop, size, size_cnt;
     analysis_packet_state_t state = ANALYSIS_PACKET_STATE_SEARCH_ADDRESS;
 
     start    = buffer->index_read;
@@ -144,21 +144,18 @@ void buffer_packet_check(buffer_t *buffer)
     size_cnt = 0;
     crc      = 0;
 
-    for (start; start != stop; start++)
+    for (i=0; i < BUFFER_SIZE; i++, start++)
     {
         start = (start >= PACKET_MAX_SIZE) ? 0 : start;
         state = ANALYSIS_PACKET_STATE_SEARCH_ADDRESS;
-        for (index = start; index != stop; index++)
+        for (index = start; index != stop; index++, size_cnt++)
         {
             index = (index >= PACKET_MAX_SIZE) ? 0 : index;
-
-            size_cnt++;
             switch (state)
             {
                 case ANALYSIS_PACKET_STATE_SEARCH_ADDRESS:
                     if (buffer->data[index] == ADDRESS)
                     {
-                        start    = index;
                         size_cnt = 1;
                         state    = ANALYSIS_PACKET_STATE_SEARCH_SIZE_MSB;
                     }
@@ -199,14 +196,14 @@ void buffer_packet_check(buffer_t *buffer)
                     {
                         packet_crc += buffer->data[index];
                         crc         = buffer_crc(buffer, start, size - 4);
-                        // printf("CRC: %08X - PACKET CRC: %08X\n", crc, packet_crc);
                         if (crc == packet_crc)
                         {
-                            printf("\npacket is ok ");
+                            printf("packet is ok ");
                             printf("crc: %08x ", crc);
-                            printf("start: %d stop: %d\n", start, start + size - 1);
+                            printf("start: %d stop: %d\n", start, index);
                         }
                         state = ANALYSIS_PACKET_STATE_SEARCH_ADDRESS;
+                        index = stop-1;
                     }
                     break;
             }
@@ -250,8 +247,6 @@ void packet_create(buffer_t *buffer, uint16_t data_size, uint8_t data[])
     buffer_insert(buffer, (uint8_t)(size >> 8));
     buffer_insert(buffer, (uint8_t)(size & 0xFF));
 
-    printf("data size: %d\n", data_size);
-
     for (uint8_t i=0; i < data_size; i++)
         buffer_insert(buffer, data[i]);
 
@@ -276,6 +271,8 @@ int main(void)
     packet_create(&buffer, 4, (uint8_t[]){ 1, 2, 3, 4 });
     buffer_insert_ones(&buffer, 230);
     packet_create(&buffer, 7, (uint8_t[]){ 7, 7, 7, 7, 7, 7, 7 });
+    buffer_insert_ones(&buffer, 235);
+    packet_create(&buffer, 5, (uint8_t[]){ 42, 42, 42, 42, 42 });
 
     buffer_print(&buffer);
     buffer_packet_check(&buffer);
