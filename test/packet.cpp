@@ -23,7 +23,7 @@ public:
     uint16_t get_index_write(void) const;
     uint16_t get_index_read(void) const;
     void set_index_read(uint16_t index);
-    uint16_t index_transform(uint16_t index) const;
+    uint16_t transform_index(uint16_t index) const;
     uint8_t read(uint16_t index) const;
     void insert(uint8_t byte);
     void insert_random_array(uint16_t size);
@@ -62,14 +62,14 @@ inline void CircularBuffer::set_index_read(uint16_t index)
     index_read = index;
 }
 
-inline uint16_t CircularBuffer::index_transform(uint16_t index) const
+inline uint16_t CircularBuffer::transform_index(uint16_t index) const
 {
     return (index >= BUFFER_SIZE) ? index % BUFFER_SIZE : index;
 }
 
 inline uint8_t CircularBuffer::read(uint16_t index) const
 {
-    return data[index];
+    return data[transform_index(index)];
 }
 
 void CircularBuffer::insert(uint8_t byte)
@@ -150,12 +150,8 @@ uint32_t CRC32::calculate(CircularBuffer *buffer, uint16_t start, uint16_t size)
 {
     uint32_t crc = ~0;
     uint16_t index, i;
-    for (i = 0; i < size; i++)
-    {
-        index = start + i;
-        index = (index >= buffer->size()) ? 0 : index;
-        crc   = table[(crc ^ buffer->read(index)) & 0xFF] ^ (crc >> 8);
-    }
+    for (i = 0, index = start; i < size; i++, index++)
+        crc = table[(crc ^ buffer->read(index)) & 0xFF] ^ (crc >> 8);
     return ~crc;
 }
 
@@ -202,36 +198,29 @@ void Packet::create(CircularBuffer *buffer, vector<uint8_t> data)
 
 void Packet::find(CircularBuffer *buffer)
 {
-    uint32_t crc_calculate, crc_read;
-    uint16_t i, index, size, size_cnt;
+    uint32_t crc;
+    uint16_t size, index = buffer->get_index_read();
 
-    size_cnt = 0;
-    index    = buffer->get_index_read();
-
-    for (i = 0; i < buffer->size(); i++, size_cnt++, index++)
-    {
-        index = buffer->index_transform(index);
+    for (uint16_t i = 0; i < buffer->size(); i++, index++)
         if (buffer->read(index) == ADDRESS)
         {
-            size  = uint16_t(buffer->read(buffer->index_transform(index + 1))) << 8;
-            size += uint16_t(buffer->read(buffer->index_transform(index + 2)));
+            size  = uint16_t(buffer->read(index + 1)) << 8;
+            size += uint16_t(buffer->read(index + 2));
             if (size >= PACKET_SIZE_MIN && size <= PACKET_SIZE_MAX)
             {
-                crc_read      = uint32_t(buffer->read(buffer->index_transform(index + size - 4))) << 24;
-                crc_read     += uint32_t(buffer->read(buffer->index_transform(index + size - 3))) << 16;
-                crc_read     += uint32_t(buffer->read(buffer->index_transform(index + size - 2))) << 8;
-                crc_read     += buffer->read(buffer->index_transform(index + size - 1));
-                crc_calculate = CRC32.calculate(buffer, index, size - 4);
-                if (crc_read == crc_calculate)
+                crc  = uint32_t(buffer->read(index + size - 4)) << 24;
+                crc += uint32_t(buffer->read(index + size - 3)) << 16;
+                crc += uint32_t(buffer->read(index + size - 2)) << 8;
+                crc += buffer->read(index + size - 1);
+                if (crc == CRC32.calculate(buffer, index, size - 4))
                 {
                     printf("packet is ok ");
-                    printf("crc: %08X ", crc_read);
-                    printf("start: %d stop: %d\n", index, buffer->index_transform(index + size - 1));
+                    printf("crc: %08X ", crc);
+                    printf("start: %d stop: %d\n", index, buffer->transform_index(index + size - 1));
                 }
             }
         }
-    }
-} // find
+}
 
 int main(void)
 {
