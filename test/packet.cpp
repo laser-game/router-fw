@@ -102,15 +102,22 @@ class CRC32
 private:
     uint32_t table[256];
     uint32_t _calculate(uint8_t byte);
+    uint64_t generator_polynomial;
 public:
-    CRC32();
+    CRC32(vector<uint8_t> gp = vector<uint8_t>({ 32, 26, 23, 22, 16, 12, 11, 10, 8, 7, 5, 4, 2, 1}));
     uint32_t calculate(uint8_t byte);
     uint32_t calculate(CircularBuffer *buffer, uint16_t start, uint16_t size);
 };
 
-CRC32::CRC32()
+CRC32::CRC32(vector<uint8_t> gp)
 {
-    for (uint16_t i = 0; i < 256; i++)
+    uint16_t i;
+    generator_polynomial = 1;
+
+    for (i = 0; i < gp.size(); i++)
+        generator_polynomial += uint64_t(1) << gp[i];
+
+    for (i = 0; i < 256; i++)
         table[i] = _calculate(i);
 }
 
@@ -120,17 +127,16 @@ uint32_t CRC32::_calculate(uint8_t byte)
     const uint64_t MASK_CRC  = 0x00FFFFFFFF;
     const uint64_t MASK_DATA = 0xFF00000000;
 
-    uint64_t gp = 0x104C11DB7;
-    uint64_t vector;
-    uint64_t mask_bit;
     uint8_t i;
-
-    vector = (uint64_t) byte << 32;
+    uint64_t gp = generator_polynomial;
 
     for (i = 0; !(gp & MASK_MSB); i++)
         gp <<= 1;
 
-    for (i = 0, mask_bit = MASK_MSB; (vector & MASK_DATA); i++, gp >>= 1, mask_bit >>= 1)
+    uint64_t vector   = (uint64_t) byte << 32;
+    uint64_t mask_bit = MASK_MSB;
+
+    for (i = 0; (vector & MASK_DATA); i++, gp >>= 1, mask_bit >>= 1)
     {
         if (vector & mask_bit)
         {
@@ -230,15 +236,15 @@ int main(void)
 
     srand(time(NULL));
 
-    packet_tx.create(&buffer, (vector<uint8_t> ){ 1, 2, 3 });
+    packet_tx.create(&buffer, vector<uint8_t>({ 1, 2, 3 }));
     buffer.insert_random_array(3);
-    packet_tx.create(&buffer, (vector<uint8_t> ){ 42, 42, 42, 42, 42, 42, 42 });
+    packet_tx.create(&buffer, vector<uint8_t>({ 42, 42, 42, 42, 42, 42, 42 }));
     buffer.insert_random_array(100);
-    packet_tx.create(&buffer, (vector<uint8_t> ){ 3, 3, 3 });
+    packet_tx.create(&buffer, vector<uint8_t>({ 3, 3, 3 }));
     buffer.insert_random_array(100);
-    packet_tx.create(&buffer, (vector<uint8_t> ){ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 });
+    packet_tx.create(&buffer, vector<uint8_t>({ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 }));
     buffer.insert_random_array(250);
-    packet_tx.create(&buffer, (vector<uint8_t> ){ 4, 4, 4, 4 });
+    packet_tx.create(&buffer, vector<uint8_t>({ 4, 4, 4, 4 }));
 
     buffer.print();
     packet_rx.find(&buffer);
