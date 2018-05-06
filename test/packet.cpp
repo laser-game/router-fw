@@ -211,31 +211,27 @@ void Packet::find(CircularBuffer *buffer)
                 {
                     size_cnt = 1;
                     state    = ANALYSIS_PACKET_STATE_SEARCH_SIZE_MSB;
-                    printf("ADDRESS\n");
                 }
                 break;
 
             case ANALYSIS_PACKET_STATE_SEARCH_SIZE_MSB:
                 size  = uint16_t(buffer->read(index)) << 8;
                 state = ANALYSIS_PACKET_STATE_SEARCH_SIZE_LSB;
-                printf("SIZE MSB\n");
                 break;
 
             case ANALYSIS_PACKET_STATE_SEARCH_SIZE_LSB:
                 size += buffer->read(index);
-                printf("SIZE LSB\n");
-                if (size >= PACKET_SIZE_MIN && size < PACKET_SIZE_MAX)
-                {
-                    state = ANALYSIS_PACKET_STATE_SEARCH_END;
-                }
-                else
+                if (size > PACKET_SIZE_MAX || size < PACKET_SIZE_MIN)
                 {
                     state = ANALYSIS_PACKET_STATE_SEARCH_ADDRESS;
                 }
+                else
+                {
+                    state = ANALYSIS_PACKET_STATE_SEARCH_END;
+                }
                 break;
 
-            default:
-                printf("END\n");
+            default:                
                 if (size_cnt == size - 3)
                 {
                     crc_read = uint32_t(buffer->read(index)) << 24;
