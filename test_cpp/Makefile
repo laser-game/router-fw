@@ -16,13 +16,13 @@ OPT = -Os
 # build dir
 BUILD_DIR = build
 # source path
-SOURCES_DIR =
+SOURCES_DIR = src
 
 ######################################
 # source
 ######################################
 # C++ sources
-CPP_SOURCES = $(wildcard *.cpp)
+CPP_SOURCES = $(wildcard $(SOURCES_DIR)/*.cpp)
 
 #######################################
 # binaries
@@ -40,7 +40,7 @@ SZ = $(BINPATH)$(PREFIX)size
 CPP_DEFS =
 
 # C includes
-CPP_INCLUDES =
+CPP_INCLUDES = -Iinc
 
 # compile gcc flags
 CPP_FLAGS = $(CPP_DEFS) $(CPP_INCLUDES) $(OPT) -std=c++11
