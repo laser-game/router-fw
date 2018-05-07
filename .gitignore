@@ -53,3 +53,4 @@ dkms.conf
 
 # Atom
 .tags*
+*.lst
