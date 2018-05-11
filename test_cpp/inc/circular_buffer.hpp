@@ -30,4 +30,4 @@ public:
     void print(void) const;
 };
 
-#endif
+#endif // ifndef __CIRCULAR_BUFFER_INLUDED__

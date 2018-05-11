@@ -7,7 +7,6 @@
 #include <vector>
 #include <ctime>
 
-#include "packet.hpp"
 #include "circular_buffer.hpp"
 
 using namespace std;
@@ -19,9 +18,9 @@ private:
     uint32_t _calculate(uint8_t byte);
     uint64_t generator_polynomial;
 public:
-    CRC32(vector<uint8_t> gp = vector<uint8_t>({ 32, 26, 23, 22, 16, 12, 11, 10, 8, 7, 5, 4, 2, 1}));
+    CRC32(vector<uint8_t> gp = vector<uint8_t>({ 32, 26, 23, 22, 16, 12, 11, 10, 8, 7, 5, 4, 2, 1 }));
     uint32_t calculate(uint8_t byte);
     uint32_t calculate(CircularBuffer *buffer, uint16_t start, uint16_t size);
 };
 
-#endif
+#endif // ifndef __CRC_INLUDED__

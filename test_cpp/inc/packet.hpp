@@ -29,4 +29,4 @@ public:
     void find(CircularBuffer *buffer);
 };
 
-#endif
+#endif // ifndef __PACKET_INLUDED__

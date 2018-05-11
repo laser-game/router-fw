@@ -7,15 +7,12 @@
 #include <vector>
 #include <ctime>
 
-#include "crc.hpp"
-#include "packet.hpp"
-#include "circular_buffer.hpp"
 
 using namespace std;
 
 #define ADDRESS 7
 
-class CRC32;
+#include "crc.hpp"
 extern CRC32 CRC32_lib;
 
 void globals_init(void);
