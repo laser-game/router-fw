@@ -127,6 +127,11 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
+        for (uint8_t i = 0;; i++)
+        {
+            led(i);
+            HAL_Delay(100);
+        }
     }
     /* USER CODE END 3 */
 } /* main */
