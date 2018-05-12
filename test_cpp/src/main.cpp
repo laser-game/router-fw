@@ -17,15 +17,15 @@ int main(void)
 
     srand(time(NULL));
 
-    packet_tx.create(&buffer, vector<uint8_t>({ 1, 2, 3 }));
+    packet_tx.create(&buffer, packet_data_array(1, 2, 3 ));
     buffer.insert_random_array(3);
-    packet_tx.create(&buffer, vector<uint8_t>({ 42, 42, 42, 42, 42, 42, 42 }));
+    packet_tx.create(&buffer, packet_data_array(42, 42, 42, 42, 42, 42, 42 ));
     buffer.insert_random_array(100);
-    packet_tx.create(&buffer, vector<uint8_t>({ 3, 3, 3 }));
+    packet_tx.create(&buffer, packet_data_array(3, 3, 3 ));
     buffer.insert_random_array(100);
-    packet_tx.create(&buffer, vector<uint8_t>({ 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 }));
+    packet_tx.create(&buffer, packet_data_array(7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7 ));
     buffer.insert_random_array(250);
-    packet_tx.create(&buffer, vector<uint8_t>({ 4, 4, 4, 4 }));
+    packet_tx.create(&buffer, packet_data_array(4, 4, 4, 4 ));
 
     buffer.print();
     packet_rx.find(&buffer);

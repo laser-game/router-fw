@@ -10,6 +10,8 @@
 #include "globals.hpp"
 #include "circular_buffer.hpp"
 
+#define packet_data_array(array...) (vector<uint8_t>({array}))
+
 using namespace std;
 
 class Packet
