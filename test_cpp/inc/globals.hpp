@@ -8,8 +8,6 @@
 #include <ctime>
 
 
-using namespace std;
-
 #define ADDRESS 7
 
 #include "crc.hpp"
