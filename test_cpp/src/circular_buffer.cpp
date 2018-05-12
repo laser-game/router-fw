@@ -12,36 +12,6 @@ CircularBuffer::~CircularBuffer()
     delete data;
 }
 
-inline uint16_t CircularBuffer::size(void) const
-{
-    return BUFFER_SIZE;
-}
-
-inline uint16_t CircularBuffer::get_index_write(void) const
-{
-    return index_write;
-}
-
-inline uint16_t CircularBuffer::get_index_read(void) const
-{
-    return index_read;
-}
-
-inline void CircularBuffer::set_index_read(uint16_t index)
-{
-    index_read = index;
-}
-
-inline uint16_t CircularBuffer::transform_index(uint16_t index) const
-{
-    return (index >= BUFFER_SIZE) ? index % BUFFER_SIZE : index;
-}
-
-inline uint8_t CircularBuffer::read(uint16_t index) const
-{
-    return data[transform_index(index)];
-}
-
 void CircularBuffer::insert(uint8_t byte)
 {
     data[index_write] = byte;

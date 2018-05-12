@@ -5,13 +5,12 @@
 #include <ctime>
 
 #include "globals.hpp"
-#include "crc.hpp"
 #include "packet.hpp"
-#include "circular_buffer.hpp"
 
 int main(void)
 {
     globals_init();
+
     CircularBuffer buffer;
     Packet packet_tx;
     Packet packet_rx;
