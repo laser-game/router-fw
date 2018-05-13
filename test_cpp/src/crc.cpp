@@ -1,7 +1,7 @@
 #include "crc.hpp"
 
-uint64_t CRC32::_generator_polynomial = 0;
-uint32_t CRC32::_table[256] = {0};
+uint64_t CRC32::_generator_polynomial;
+uint32_t CRC32::_table[256];
 
 void CRC32::init(vector<uint8_t> gp)
 {
