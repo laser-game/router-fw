@@ -2,5 +2,5 @@
 
 void globals_init(void)
 {
-    ;
+    CRC32::init();
 }

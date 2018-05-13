@@ -11,7 +11,7 @@
 int main(void)
 {
     globals_init();
-
+    
     CircularBuffer buffer;
     Packet packet_tx;
     Packet packet_rx;
@@ -30,8 +30,6 @@ int main(void)
 
     buffer.print();
     packet_rx.find(&buffer);
-
-    CRC32::table_free();
 
     return 0;
 }
