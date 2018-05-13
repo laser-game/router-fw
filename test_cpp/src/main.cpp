@@ -31,5 +31,7 @@ int main(void)
     buffer.print();
     packet_rx.find(&buffer);
 
+    CRC32::table_free();
+
     return 0;
 }

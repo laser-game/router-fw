@@ -80,6 +80,8 @@ $(BUILD_DIR):
 make_and_run: all
 	./$(BUILD_DIR)/$(TARGET).elf
 
+valgrind: all
+	valgrind ./$(BUILD_DIR)/$(TARGET).elf
 
 #######################################
 # clean up

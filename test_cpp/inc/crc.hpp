@@ -20,6 +20,7 @@ private:
     static uint32_t _calculate(uint8_t byte);
 public:
     static uint32_t * table_init(vector<uint8_t> gp = vector<uint8_t>({ 32, 26, 23, 22, 16, 12, 11, 10, 8, 7, 5, 4, 2, 1 }));
+    static void table_free() { delete [] table; }
     static uint32_t calculate(uint8_t byte);
     static uint32_t calculate(CircularBuffer *buffer, uint16_t start, uint16_t size);
 };

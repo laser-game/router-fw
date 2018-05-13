@@ -7,11 +7,6 @@ CircularBuffer::CircularBuffer()
     data        = new uint8_t[BUFFER_SIZE];
 }
 
-CircularBuffer::~CircularBuffer()
-{
-    delete data;
-}
-
 void CircularBuffer::insert(uint8_t byte)
 {
     data[index_write] = byte;
