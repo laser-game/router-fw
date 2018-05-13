@@ -15,7 +15,7 @@ void Packet::create(CircularBuffer *buffer, vector<uint8_t> data)
     for (uint8_t i = 0; i < data.size(); i++)
         buffer->insert(data[i]);
 
-    crc = CRC32_lib.calculate(buffer, start, data.size() + PACKET_SIZE_HEAD);
+    crc = CRC32::calculate(buffer, start, data.size() + PACKET_SIZE_HEAD);
     buffer->insert((uint8_t) (crc >> 24));
     buffer->insert((uint8_t) (crc >> 16));
     buffer->insert((uint8_t) (crc >> 8));
@@ -38,7 +38,7 @@ void Packet::find(CircularBuffer *buffer)
                 crc += uint32_t(buffer->read(index + size - 3)) << 16;
                 crc += uint32_t(buffer->read(index + size - 2)) << 8;
                 crc += buffer->read(index + size - 1);
-                if (crc == CRC32_lib.calculate(buffer, index, size - 4))
+                if (crc == CRC32::calculate(buffer, index, size - 4))
                 {
                     printf("packet is ok ");
                     printf("crc: %08X ", crc);

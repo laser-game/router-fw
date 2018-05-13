@@ -8,9 +8,8 @@
 #include <ctime>
 
 #include "globals.hpp"
+#include "crc.hpp"
 #include "circular_buffer.hpp"
-
-#define packet_data_array(array...) (vector<uint8_t>({array}))
 
 using namespace std;
 

@@ -1,15 +1,21 @@
 #include "crc.hpp"
 
-CRC32::CRC32(vector<uint8_t> gp)
+uint64_t CRC32::generator_polynomial = 0;
+uint32_t *CRC32::table = CRC32::table_init();
+
+uint32_t * CRC32::table_init(vector<uint8_t> gp)
 {
-    uint16_t i;
+    uint32_t *tab = new uint32_t[256];
     generator_polynomial = 1;
+    uint16_t i;
 
     for (i = 0; i < gp.size(); i++)
         generator_polynomial += uint64_t(1) << gp[i];
 
     for (i = 0; i < 256; i++)
-        table[i] = _calculate(i);
+        tab[i] = _calculate(i);
+
+    return tab;
 }
 
 uint32_t CRC32::_calculate(uint8_t byte)
@@ -38,7 +44,7 @@ uint32_t CRC32::_calculate(uint8_t byte)
     return (uint32_t) (vector & MASK_CRC);
 }
 
-inline uint32_t CRC32::calculate(uint8_t byte)
+uint32_t CRC32::calculate(uint8_t byte)
 {
     return table[byte];
 }
