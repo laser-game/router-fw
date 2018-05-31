@@ -110,7 +110,7 @@ int main(void)
     /* USER CODE BEGIN 2 */
     auto router = Router::instance();
     router->hmtrp = new HMTRP(&huart2);
-    router->usb = new USB(&huart1);
+    router->usb   = new USB(&huart1);
 
 
     /* USER CODE END 2 */

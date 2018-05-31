@@ -10,9 +10,9 @@ using namespace std;
 class Router
 {
 private:
-    Router() {};
+    Router(){ };
 public:
-    static Router *instance();
+    static Router * instance();
     HMTRP *hmtrp;
     USB *usb;
     void led(uint8_t byte);
