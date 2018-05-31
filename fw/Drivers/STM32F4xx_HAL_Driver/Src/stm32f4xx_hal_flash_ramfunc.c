@@ -108,9 +108,9 @@
  * @note  This mode is only available for STM32F41xxx/STM32F446xx devices.
  * @note  This mode couldn't be set while executing with the flash itself.
  *        It should be done with specific routine executed from RAM.
- * @retval None
+ * @retval HAL status
  */
-__RAM_FUNC HAL_FLASHEx_StopFlashInterfaceClk(void)
+__RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_StopFlashInterfaceClk(void)
 {
     /* Enable Power ctrl clock */
     __HAL_RCC_PWR_CLK_ENABLE();
@@ -125,9 +125,9 @@ __RAM_FUNC HAL_FLASHEx_StopFlashInterfaceClk(void)
  * @note  This mode is only available for STM32F411xx/STM32F446xx devices.
  * @note  This mode couldn't be set while executing with the flash itself.
  *        It should be done with specific routine executed from RAM.
- * @retval None
+ * @retval HAL status
  */
-__RAM_FUNC HAL_FLASHEx_StartFlashInterfaceClk(void)
+__RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_StartFlashInterfaceClk(void)
 {
     /* Enable Power ctrl clock */
     __HAL_RCC_PWR_CLK_ENABLE();
@@ -142,9 +142,9 @@ __RAM_FUNC HAL_FLASHEx_StartFlashInterfaceClk(void)
  * @note  This mode is only available for STM32F41xxx/STM32F446xx devices.
  * @note  This mode could n't be set while executing with the flash itself.
  *        It should be done with specific routine executed from RAM.
- * @retval None
+ * @retval HAL status
  */
-__RAM_FUNC HAL_FLASHEx_EnableFlashSleepMode(void)
+__RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_EnableFlashSleepMode(void)
 {
     /* Enable Power ctrl clock */
     __HAL_RCC_PWR_CLK_ENABLE();
@@ -159,9 +159,9 @@ __RAM_FUNC HAL_FLASHEx_EnableFlashSleepMode(void)
  * @note  This mode is only available for STM32F41xxx/STM32F446xx devices.
  * @note  This mode couldn't be set while executing with the flash itself.
  *        It should be done with specific routine executed from RAM.
- * @retval None
+ * @retval HAL status
  */
-__RAM_FUNC HAL_FLASHEx_DisableFlashSleepMode(void)
+__RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableFlashSleepMode(void)
 {
     /* Enable Power ctrl clock */
     __HAL_RCC_PWR_CLK_ENABLE();
