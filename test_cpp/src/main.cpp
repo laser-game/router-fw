@@ -11,7 +11,7 @@
 int main(void)
 {
     globals_init();
-    
+
     CircularBuffer buffer;
     Packet packet_tx;
     Packet packet_rx;
