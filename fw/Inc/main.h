@@ -49,10 +49,10 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define RF_CONFIG_Pin           GPIO_PIN_0
-#define RF_CONFIG_GPIO_Port     GPIOA
-#define RF_ENABLE_Pin           GPIO_PIN_1
+#define RF_ENABLE_Pin           GPIO_PIN_0
 #define RF_ENABLE_GPIO_Port     GPIOA
+#define RF_CONFIG_Pin           GPIO_PIN_1
+#define RF_CONFIG_GPIO_Port     GPIOA
 #define RF_UART_TX_Pin          GPIO_PIN_2
 #define RF_UART_TX_GPIO_Port    GPIOA
 #define RF_UART_RX_Pin          GPIO_PIN_3

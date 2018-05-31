@@ -40,7 +40,8 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#include "globals.hpp"
+#include <string>
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -65,17 +66,7 @@ static void MX_RTC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-void led(uint8_t byte)
-{
-    HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, (byte & 0x80) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, (byte & 0x40) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED5_GPIO_Port, LED5_Pin, (byte & 0x20) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, (byte & 0x10) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, (byte & 0x08) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, (byte & 0x04) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, (byte & 0x02) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, (byte & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_SET);
-}
+
 
 /* USER CODE END PFP */
 
@@ -117,6 +108,10 @@ int main(void)
     MX_USART3_UART_Init();
     MX_RTC_Init();
     /* USER CODE BEGIN 2 */
+    auto router = Router::instance();
+    router->hmtrp = new HMTRP(&huart2);
+    router->usb = new USB(&huart1);
+
 
     /* USER CODE END 2 */
 
@@ -127,11 +122,14 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-        for (uint8_t i = 0;; i++)
+
+        for (uint8_t i = 0; i < 254; i++)
         {
-            led(i);
-            HAL_Delay(100);
+            router->led(i);
+            router->hmtrp->tx(i);
+            HAL_Delay(7);
         }
+        router->hmtrp->tx(string("Ahoj jak se mas?"));
     }
     /* USER CODE END 3 */
 } /* main */
@@ -288,7 +286,7 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     /*Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(GPIOA, RF_CONFIG_Pin | RF_ENABLE_Pin | LED7_Pin | LED6_Pin
+    HAL_GPIO_WritePin(GPIOA, RF_ENABLE_Pin | RF_CONFIG_Pin | LED7_Pin | LED6_Pin
       | LED5_Pin | LED4_Pin, GPIO_PIN_RESET);
 
     /*Configure GPIO pin Output Level */
@@ -297,9 +295,9 @@ static void MX_GPIO_Init(void)
     /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(GPIOB, LED1_Pin | LED0_Pin, GPIO_PIN_RESET);
 
-    /*Configure GPIO pins : RF_CONFIG_Pin RF_ENABLE_Pin LED7_Pin LED6_Pin
+    /*Configure GPIO pins : RF_ENABLE_Pin RF_CONFIG_Pin LED7_Pin LED6_Pin
      *                       LED5_Pin LED4_Pin */
-    GPIO_InitStruct.Pin = RF_CONFIG_Pin | RF_ENABLE_Pin | LED7_Pin | LED6_Pin
+    GPIO_InitStruct.Pin = RF_ENABLE_Pin | RF_CONFIG_Pin | LED7_Pin | LED6_Pin
       | LED5_Pin | LED4_Pin;
     GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
