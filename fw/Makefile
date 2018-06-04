@@ -77,6 +77,7 @@ Src/stm32f4xx_it.c
 
 # C++ sources
 CPP_SOURCES = $(wildcard Src/*.cpp)
+CPP_SOURCES += $(wildcard ../../common-fw/Src/*.cpp)
 
 
 # ASM sources
