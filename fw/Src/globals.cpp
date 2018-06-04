@@ -26,11 +26,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     {
         router->led(router->hmtrp->buffer_rx[0]);
         router->usb->tx(router->hmtrp->buffer_rx[0]);
-        router->hmtrp->rx();
+        router->hmtrp->rx_it();
     }
     else if (huart->Instance == router->usb->get_huart()->Instance)
     {
         router->hmtrp->tx(string("XXXXXXXX"));
-        router->usb->rx();
+        router->usb->rx_it();
     }
 }
