@@ -108,8 +108,7 @@ int main(void)
     MX_USART3_UART_Init();
     MX_RTC_Init();
     /* USER CODE BEGIN 2 */
-    auto router = Router::instance();
-    router->hmtrp = new HMTRP(&huart2);
+    router->hmtrp = new HMTRP(&huart2, 9600);
     router->usb   = new USB(&huart1);
 
 
@@ -122,14 +121,11 @@ int main(void)
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
-
-        for (uint8_t i = 0; i < 254; i++)
+        for (uint8_t i = 0; i < 10; i++)
         {
-            router->led(i);
+            HAL_Delay(500);
             router->hmtrp->tx(i);
-            HAL_Delay(7);
         }
-        router->hmtrp->tx(string("Ahoj jak se mas?"));
     }
     /* USER CODE END 3 */
 } /* main */

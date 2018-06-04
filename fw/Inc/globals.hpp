@@ -18,4 +18,6 @@ public:
     void led(uint8_t byte);
 };
 
+extern Router *router;
+
 #endif // ifndef __GLOBALS_INLUDED__

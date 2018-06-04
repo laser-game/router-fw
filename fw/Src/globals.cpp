@@ -1,5 +1,7 @@
 #include "globals.hpp"
 
+Router *router = Router::instance();
+
 Router * Router::instance()
 {
     static Router object;
@@ -20,7 +22,6 @@ void Router::led(uint8_t byte)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    auto router = Router::instance();
     if (huart->Instance == router->hmtrp->get_huart()->Instance)
     {
         router->led(router->hmtrp->buffer_rx[0]);
@@ -29,6 +30,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     else if (huart->Instance == router->usb->get_huart()->Instance)
     {
-        ;
+        router->hmtrp->tx(string("XXXXXXXX"));
+        router->usb->rx();
     }
 }
