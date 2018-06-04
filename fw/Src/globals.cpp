@@ -1,14 +1,14 @@
 #include "globals.hpp"
 
-Router *router = Router::instance();
+Global *global = Global::instance();
 
-Router * Router::instance()
+Global * Global::instance()
 {
-    static Router object;
+    static Global object;
     return &object;
 }
 
-void Router::led(uint8_t byte)
+void Global::led(uint8_t byte)
 {
     HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, (byte & 0x80) ? GPIO_PIN_RESET : GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, (byte & 0x40) ? GPIO_PIN_RESET : GPIO_PIN_SET);
@@ -22,15 +22,15 @@ void Router::led(uint8_t byte)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-    if (huart->Instance == router->hmtrp->get_huart()->Instance)
+    if (huart->Instance == global->hmtrp->get_huart()->Instance)
     {
-        router->led(router->hmtrp->buffer_rx[0]);
-        router->usb->tx(router->hmtrp->buffer_rx[0]);
-        router->hmtrp->rx_it();
+        global->radio_buffer_rx->insert(global->hmtrp->buffer_rx[0]);
+        global->usb->tx(global->hmtrp->buffer_rx[0]);
+        global->hmtrp->rx_it();
     }
-    else if (huart->Instance == router->usb->get_huart()->Instance)
+    else if (huart->Instance == global->usb->get_huart()->Instance)
     {
-        router->hmtrp->tx(string("XXXXXXXX"));
-        router->usb->rx_it();
+        global->hmtrp->tx(string("XXXXXXXX"));
+        global->usb->rx_it();
     }
 }
