@@ -24,10 +24,9 @@ HMTRP::HMTRP(
     HAL_Delay(10);
     enable(true);
     HAL_Delay(10);
-
     config(true);
 
-    while (!read_config())
+    while (not read_config())
     {
         for (uint32_t bd : HMTP_BAUDRATE_ARRAY)
         {
@@ -42,35 +41,35 @@ HMTRP::HMTRP(
     if (this->wireless_data_rate != baudrate)
     {
         global->usb->tx("config wireless_data_rate\n");
-        while (!set_wireless_data_rate(baudrate))
+        while (not set_wireless_data_rate(baudrate))
             ;
     }
 
     if (this->uart_transfer_speed != baudrate)
     {
         global->usb->tx("config uart_transfer_speed\n");
-        while (!set_uart_transfer_speed(baudrate))
+        while (not set_uart_transfer_speed(baudrate))
             ;
     }
 
     if (this->receiving_bandwidth != receiving_bandwidth)
     {
         global->usb->tx("config receiving_bandwidth\n");
-        while (!set_receiving_bandwidth(receiving_bandwidth))
+        while (not set_receiving_bandwidth(receiving_bandwidth))
             ;
     }
 
     if (this->frequency_deviation != frequency_deviation)
     {
         global->usb->tx("config frequency_deviation\n");
-        while (!set_frequency_deviation(frequency_deviation))
+        while (not set_frequency_deviation(frequency_deviation))
             ;
     }
 
     if (this->transmission_power != transmission_power)
     {
         global->usb->tx("config transmission_power\n");
-        while (!set_transmission_power(transmission_power))
+        while (not set_transmission_power(transmission_power))
             ;
     }
 
