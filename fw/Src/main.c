@@ -113,8 +113,6 @@ int main(void)
     global->radio_buffer_rx = new CircularBuffer;
 
     global->usb->tx("START\n");
-    global->hmtrp->print_config();
-    global->usb->tx("===========================================\n");
 
     /* USER CODE END 2 */
 

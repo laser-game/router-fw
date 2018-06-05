@@ -2,8 +2,10 @@
 #define __GLOBALS_INLUDED__
 
 #include "stm32f4xx_hal.h"
-#include "hm-trp.hpp"
+
 #include "usb.hpp"
+
+#include "cm-hm-trp.hpp"
 #include "cm-circular-buffer.hpp"
 #include "cm-crc.hpp"
 #include "cm-packet.hpp"
