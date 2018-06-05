@@ -108,10 +108,13 @@ int main(void)
     MX_USART3_UART_Init();
     MX_RTC_Init();
     /* USER CODE BEGIN 2 */
-    global->hmtrp = new HMTRP(&huart2, 9600);
     global->usb   = new USB(&huart1);
+    global->hmtrp = new HMTRP(&huart2, 57600, 0);
     global->radio_buffer_rx = new CircularBuffer;
 
+    global->usb->tx("START\n");
+    global->hmtrp->print_config();
+    global->usb->tx("===========================================\n");
 
     /* USER CODE END 2 */
 
@@ -125,7 +128,7 @@ int main(void)
         for (uint8_t i = 0; i < 10; i++)
         {
             HAL_Delay(500);
-            global->hmtrp->tx(i);
+            //global->hmtrp->tx(i);
         }
     }
     /* USER CODE END 3 */

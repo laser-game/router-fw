@@ -30,7 +30,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     }
     else if (huart->Instance == global->usb->get_huart()->Instance)
     {
-        global->hmtrp->tx(string("XXXXXXXX"));
+        global->hmtrp->tx(global->usb->buffer_rx[0]);
         global->usb->rx_it();
     }
 }
